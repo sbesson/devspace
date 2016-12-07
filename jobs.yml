@@ -1,0 +1,45 @@
+- job:
+    block-downstream: false
+    block-upstream: false
+    builders:
+    - shell: |-
+        pip install --user scc
+        test -e src && cd src
+        $HOME/.local/bin/scc $MERGE_COMMAND -S $STATUS --push $PUSH_BRANCH
+    concurrent: false
+    description: null
+    disabled: false
+    name: OMERO-push
+    node: testintegration
+    parameters:
+    - string:
+        default: merge SPACENAME --no-ask --reset --update-gitmodules
+        description: ''
+        name: MERGE_COMMAND
+    - choice:
+        choices:
+        - success-only
+        - no-error
+        - none
+        description: ''
+        name: STATUS
+    - string:
+        default: SPACEBRANCH/merge/trigger
+        description: ''
+        name: PUSH_BRANCH
+    project-type: freestyle
+    properties: []
+    publishers: []
+    scm:
+    - git:
+        url: https://github.com/openmicroscopy/openmicroscopy.git
+        branches:
+            - SPACEBRANCH
+        submodule:
+            disable: false
+            recursive: true
+            tracking: false
+        clean:
+            after: true
+    triggers: []
+    wrappers: []
