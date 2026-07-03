@@ -20,6 +20,10 @@ Devspace code depends on the following repositories:
 
 # Installation
 
+This application includes UoD-specific UoD deployment configuration.
+
+Please refer to [this file ](Docker_Config_UoD_ESS.md) before deploying.
+
 The following instructions explain how to deploy a devspace on a Docker host.
 
 *   Log into the Docker host using ssh
