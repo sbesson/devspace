@@ -14,30 +14,16 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>rm -rf $WORKSPACE/.venv3
-python3.11 -m venv $WORKSPACE/.venv3
-
-source $WORKSPACE/.venv3/bin/activate
-pip install -U pip setuptools
-pip install https://github.com/glencoesoftware/zeroc-ice-py-linux-x86_64/releases/download/20240202/zeroc_ice-3.6.5-cp311-cp311-manylinux_2_28_x86_64.whl
-pip install markdown
-pip install mox3 pytest pytest-django pytest-xdist pytest-mock
-pip install tables
-pip install jinja2
-pip install PyYAML
-pip install omero-py omero-web  # Latest in order to stop server.
-      </command>
-    </hudson.tasks.Shell>
-    <hudson.tasks.Shell>
       <command>
 source /home/settings.env
 OMERO_DB_NAME=$JOB_NAME
 SRC=$WORKSPACE/src
 OMERO_DIST=$SRC/dist
+OMERO_ENV=$WORKSPACE/.venv3
 export OMERODIR=$OMERO_DIST
 
-if [ -e $OMERO_DIST ]; then
-    source $WORKSPACE/.venv3/bin/activate
+if [ -e $OMERO_ENV ]; then
+    source $OMERO_ENV/bin/activate
     omero admin stop || echo not running
     deactivate
     sleep 5

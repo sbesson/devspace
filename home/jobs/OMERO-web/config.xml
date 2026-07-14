@@ -25,20 +25,11 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>rm -rf $WORKSPACE/.venv3
-python3.11 -m venv $WORKSPACE/.venv3
-
-source $WORKSPACE/.venv3/bin/activate
-pip install -U pip
-pip install https://github.com/glencoesoftware/zeroc-ice-py-linux-x86_64/releases/download/20240202/zeroc_ice-3.6.5-cp311-cp311-manylinux_2_28_x86_64.whl
-pip install markdown
-pip install omero-py omero-web  # Latest in order to stop server. NB: Re-installed from python-superbuild below</command>
-    </hudson.tasks.Shell>
-    <hudson.tasks.Shell>
       <command>OMERO_DIST=$WORKSPACE/OMERO.web
 export OMERODIR=$OMERO_DIST
-if [ -e $OMERO_DIST ]; then
-    source $WORKSPACE/.venv3/bin/activate
+OMERO_ENV=$WORKSPACE/.venv3
+if [ -e $OMERO_ENV ]; then
+    source $OMERO_ENV/bin/activate
     omero web stop || echo &apos;not running&apos;
     sleep 5
     echo &quot;Using kill to be extra careful&quot;
@@ -50,7 +41,15 @@ if [ -e $OMERO_DIST ]; then
 fi
 
 rm -rf $HOME/static/web/
-rm -rf $WORKSPACE/*</command>
+rm -rf $WORKSPACE/*
+
+python3.11 -m venv $OMERO_ENV
+source $OMERO_ENV/bin/activate
+pip install -U pip
+pip install https://github.com/glencoesoftware/zeroc-ice-py-linux-x86_64/releases/download/20240202/zeroc_ice-3.6.5-cp311-cp311-manylinux_2_28_x86_64.whl
+
+
+</command>
     </hudson.tasks.Shell>
     <hudson.plugins.copyartifact.CopyArtifact plugin="copyartifact@722.v0662a_9b_e22a_c">
       <project>OMERO-build</project>
